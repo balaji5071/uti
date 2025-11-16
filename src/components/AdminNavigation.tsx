@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { ShieldCheck, ArrowLeft, LogOut } from 'lucide-react';
 
 export type AdminSection = 'overview' | 'reviews' | 'bookings';
@@ -11,8 +10,6 @@ interface AdminNavigationProps {
 }
 
 export default function AdminNavigation({ onBackToSite, onLogout, activeSection, onSectionChange }: AdminNavigationProps) {
-  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
-
   const sectionLinks: { id: AdminSection; label: string }[] = [
     { id: 'overview', label: 'Overview' },
     { id: 'reviews', label: 'Reviews' },
@@ -63,7 +60,7 @@ export default function AdminNavigation({ onBackToSite, onLogout, activeSection,
 
           {onLogout && (
             <button
-              onClick={() => setShowLogoutConfirm(true)}
+              onClick={onLogout}
               className="inline-flex items-center space-x-2 px-3 py-2 rounded-lg bg-rose-500 text-white text-sm hover:bg-rose-600 shadow"
             >
               <LogOut className="h-4 w-4" />
@@ -88,44 +85,6 @@ export default function AdminNavigation({ onBackToSite, onLogout, activeSection,
           ))}
         </div>
       </div>
-
-      {showLogoutConfirm && (
-        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 px-4">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6">
-            <div className="flex items-center space-x-3 mb-4">
-              <div className="p-2 rounded-full bg-rose-100 text-rose-600">
-                <LogOut className="h-5 w-5" />
-              </div>
-              <div>
-                <p className="text-lg font-semibold text-gray-900">Sign out?</p>
-                <p className="text-sm text-gray-500">You can always log back in later.</p>
-              </div>
-            </div>
-
-            <p className="text-sm text-gray-600 mb-6">
-              This will end your admin session and return you to the site.
-            </p>
-
-            <div className="flex flex-col sm:flex-row sm:justify-end gap-3">
-              <button
-                onClick={() => setShowLogoutConfirm(false)}
-                className="flex-1 sm:flex-initial px-4 py-2 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50"
-              >
-                Stay Logged In
-              </button>
-              <button
-                onClick={() => {
-                  setShowLogoutConfirm(false);
-                  onLogout?.();
-                }}
-                className="flex-1 sm:flex-initial px-4 py-2 rounded-lg bg-rose-500 text-white font-semibold hover:bg-rose-600 shadow"
-              >
-                Logout
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
     </header>
   );
 }

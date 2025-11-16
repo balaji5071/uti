@@ -1,13 +1,38 @@
 import { MapPin, Phone, Clock, Mail } from 'lucide-react';
 import { useState } from 'react';
 import BookingModal from '../components/BookingModal';
+import Seo from '../components/Seo';
 
 export default function Contact() {
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+  const siteUrl = import.meta.env.VITE_SITE_URL || 'https://utibeauty.com';
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-rose-50 to-white py-16 px-4">
-      <div className="max-w-7xl mx-auto">
+    <>
+      <Seo
+        title="Contact UTI Beauty Parlour"
+        description="Reach UTI Beauty Parlour for appointments, directions, or business hours. Call, WhatsApp, or visit us in Ambagarh Chowki."
+        keywords={['contact beauty parlour', 'UTI Beauty phone', 'beauty salon directions', 'book beauty appointment', 'Ambagarh Chowki parlour']}
+        path="/#contact"
+        structuredData={{
+          '@context': 'https://schema.org',
+          '@type': 'BeautySalon',
+          name: 'UTI Beauty Parlour',
+          url: siteUrl,
+          telephone: '+91-9346163673',
+          address: {
+            '@type': 'PostalAddress',
+            streetAddress: 'QPGV+MX5, Ambedkar Chowk',
+            addressLocality: 'Ambagarh Chowki',
+            addressRegion: 'Chhattisgarh',
+            postalCode: '491665',
+            addressCountry: 'IN',
+          },
+          openingHours: 'Mo-Sa 10:00-20:00',
+        }}
+      />
+      <div className="min-h-screen bg-gradient-to-b from-rose-50 to-white py-16 px-4">
+        <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent">
             Contact Us
@@ -51,7 +76,11 @@ export default function Contact() {
                 <div className="bg-rose-100 p-3 rounded-full">
                   <Mail className="h-6 w-6 text-rose-600" />
                 </div>
-                
+                <div>
+                  <h3 className="font-semibold text-gray-800 mb-1">Email</h3>
+                  <p className="text-gray-600">hello@utibeauty.com</p>
+                  <p className="text-gray-600">support@utibeauty.com</p>
+                </div>
               </div>
 
               <div className="flex items-start space-x-4">
@@ -119,12 +148,13 @@ export default function Contact() {
             </button>
           </div>
         </div>
-      </div>
+        </div>
 
-      <BookingModal
-        isOpen={isBookingModalOpen}
-        onClose={() => setIsBookingModalOpen(false)}
-      />
-    </div>
+        <BookingModal
+          isOpen={isBookingModalOpen}
+          onClose={() => setIsBookingModalOpen(false)}
+        />
+      </div>
+    </>
   );
 }

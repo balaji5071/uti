@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Calendar, Award, Users, Sparkles } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 import BookingModal from '../components/BookingModal';
+import Seo, { SITE_URL } from '../components/Seo';
 
 export default function Home() {
   const [isOpen, setIsOpen] = useState(true);
@@ -76,8 +77,45 @@ export default function Home() {
     setLoading(false);
   };
 
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'BeautySalon',
+    name: 'UTI Beauty Parlour',
+    url: SITE_URL,
+    image: 'https://images.pexels.com/photos/3065209/pexels-photo-3065209.jpeg?auto=compress&cs=tinysrgb&w=600',
+    telephone: '+91 9346163673',
+    priceRange: '₹₹',
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: 'QPGV+MX5, Ambedkar Chowk',
+      addressLocality: 'Ambagarh Chowki',
+      addressRegion: 'Chhattisgarh',
+      postalCode: '491665',
+      addressCountry: 'IN',
+    },
+    openingHoursSpecification: [
+      {
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'],
+        opens: '10:00',
+        closes: '20:00',
+      },
+    ],
+    sameAs: [
+      'https://www.google.com/maps/place/QPGV%2BMX5,+Ambedkar+Chowk,+Ambagarh+Chowki,+Chhattisgarh+491665',
+    ],
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-rose-50 to-white">
+    <>
+      <Seo
+        title="Beauty Salon in Ambagarh Chowki"
+        description="Discover UTI Beauty Parlour in Ambagarh Chowki for premium bridal makeup, hair styling, facials, and personalized beauty experiences."
+        keywords={['beauty parlour', 'bridal makeup Ambagarh Chowki', 'hair styling', 'facial treatments', 'UTI Beauty']}
+        path="/"
+        structuredData={structuredData}
+      />
+      <div className="min-h-screen bg-gradient-to-b from-rose-50 to-white">
       <section className="relative h-[600px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-rose-500/10 to-pink-500/10" />
         <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
@@ -190,5 +228,6 @@ export default function Home() {
         onClose={() => setIsBookingModalOpen(false)}
       />
     </div>
+    </>
   );
 }

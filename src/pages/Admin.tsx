@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Power, Loader, Trash } from 'lucide-react';
 import { supabase, Review } from '../lib/supabase';
 import AdminNavigation, { AdminSection } from '../components/AdminNavigation';
@@ -18,6 +19,7 @@ type Booking = {
 };
 
 export default function Admin({ onLogout }: { onLogout?: () => void }) {
+  const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(true);
   const [loading, setLoading] = useState(true);
   const [shopStatusError, setShopStatusError] = useState<string | null>(null);
@@ -404,9 +406,7 @@ export default function Admin({ onLogout }: { onLogout?: () => void }) {
   return (
     <div className="min-h-screen bg-gradient-to-b from-rose-50 to-white">
       <AdminNavigation
-        onBackToSite={() => {
-          window.location.hash = 'home';
-        }}
+        onBackToSite={() => navigate('/')}
         onLogout={onLogout}
         activeSection={activeSection}
         onSectionChange={setActiveSection}

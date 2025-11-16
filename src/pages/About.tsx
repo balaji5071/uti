@@ -1,8 +1,16 @@
 import { Award, Users, Clock, Heart } from 'lucide-react';
+import Seo from '../components/Seo';
 
 export default function About() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-rose-50 to-white py-16 px-4">
+    <>
+      <Seo
+        title="About UTI Beauty Parlour"
+        description="Learn about UTI Beauty Parlour's story, expert team, premium products, and commitment to personalized beauty care."
+        keywords={['about beauty parlour', 'UTI Beauty team', 'beauty experts', 'premium beauty services', 'beauty salon story']}
+        path="/#about"
+      />
+      <div className="min-h-screen bg-gradient-to-b from-rose-50 to-white py-16 px-4">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent">
@@ -113,5 +121,6 @@ export default function About() {
         </div>
       </div>
     </div>
+    </>
   );
 }

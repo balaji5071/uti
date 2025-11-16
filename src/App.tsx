@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Navigation from './components/Navigation';
 import Home from './pages/Home';
 import Services from './pages/Services';
@@ -6,15 +7,20 @@ import Gallery from './pages/Gallery';
 import About from './pages/About';
 import Reviews from './pages/Reviews';
 import Contact from './pages/Contact';
-import AdminGuard from './components/AdminGuard';
+
+const VALID_PAGES = ['home', 'services', 'gallery', 'about', 'reviews', 'contact'] as const;
+type PageSlug = (typeof VALID_PAGES)[number];
+
+const isValidPage = (value: string): value is PageSlug =>
+  VALID_PAGES.includes(value as PageSlug);
 
 function App() {
-  const validPages = ['home', 'services', 'gallery', 'about', 'reviews', 'contact', 'admin'];
+  const routerNavigate = useNavigate();
 
   const resolvePageFromHash = () => {
     try {
       const hash = window.location.hash.replace(/^#/, '');
-      if (hash && validPages.includes(hash)) return hash;
+  if (hash && isValidPage(hash)) return hash;
     } catch (e) {
       // ignore
     }
@@ -26,7 +32,7 @@ function App() {
     const fromHash = resolvePageFromHash();
     if (fromHash) return fromHash;
     const stored = typeof window !== 'undefined' ? window.localStorage.getItem('currentPage') : null;
-    if (stored && validPages.includes(stored)) return stored;
+  if (stored && isValidPage(stored)) return stored;
     return 'home';
   };
 
@@ -35,15 +41,26 @@ function App() {
   // Keep state in sync with browser history (hash) so refresh/back-forward work
   useEffect(() => {
     const onHashChange = () => {
-      const p = resolvePageFromHash();
-      if (p) setCurrentPage(p);
+      try {
+        const hash = window.location.hash.replace(/^#/, '');
+        if (hash === 'admin') {
+          routerNavigate('/admin');
+          return;
+        }
+
+        const p = resolvePageFromHash();
+        if (p) setCurrentPage(p);
+      } catch (e) {
+        // ignore hash errors
+      }
     };
     window.addEventListener('hashchange', onHashChange);
+    onHashChange();
     return () => window.removeEventListener('hashchange', onHashChange);
-  }, []);
+  }, [routerNavigate]);
 
-  const navigate = (page: string) => {
-    if (!validPages.includes(page)) page = 'home';
+  const changePage = (page: string) => {
+    if (!isValidPage(page)) page = 'home';
     setCurrentPage(page);
     try {
       window.localStorage.setItem('currentPage', page);
@@ -70,8 +87,6 @@ function App() {
         return <Reviews />;
       case 'contact':
         return <Contact />;
-      case 'admin':
-        return <AdminGuard />;
       default:
         return <Home />;
     }
@@ -79,9 +94,7 @@ function App() {
 
   return (
     <div className="min-h-screen bg-white">
-      {currentPage !== 'admin' && (
-        <Navigation currentPage={currentPage} onNavigate={navigate} />
-      )}
+      <Navigation currentPage={currentPage} onNavigate={changePage} />
       {renderPage()}
 
       <footer className="bg-gray-900 text-white py-8">
@@ -91,7 +104,7 @@ function App() {
             Made with love for beautiful transformations
           </p>
           <button
-            onClick={() => navigate('admin')}
+            onClick={() => routerNavigate('/admin')}
             className="mt-4 text-xs text-gray-500 hover:text-gray-300 transition-colors"
           >
             Admin
