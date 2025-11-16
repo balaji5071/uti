@@ -1,5 +1,6 @@
 import { X, Calendar, Clock } from 'lucide-react';
 import { useState, FormEvent } from 'react';
+import { supabase } from '../lib/supabase';
 
 interface BookingModalProps {
   isOpen: boolean;
@@ -38,6 +39,34 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
       alert(`Please accept the pre-booking deposit of ₹${DEPOSIT}.`);
       return;
     }
+    // Persist booking to the `bookings` table (best-effort). If Supabase isn't configured,
+    // the stub client will return an error object and we silently continue to open WhatsApp.
+    let persistError: string | null = null;
+    (async () => {
+      try {
+        const { error } = await supabase.from('bookings').insert([
+          {
+            customer_name: formData.name,
+            phone: formData.phone,
+            service: formData.service,
+            preferred_date: formData.date,
+            preferred_time: formData.time,
+            notes: formData.notes,
+            deposit_amount: DEPOSIT,
+            deposit_paid: false,
+            status: 'pending',
+          },
+        ]);
+        if (error) persistError = error.message;
+      } catch (err: any) {
+        persistError = err?.message || String(err);
+      } finally {
+        if (persistError) {
+          // Show a non-blocking alert to the user so they're aware booking wasn't saved server-side
+          alert('Warning: booking could not be saved to server: ' + persistError + '\nWhatsApp will still open so you can confirm with us.');
+        }
+      }
+    })();
   const message = `Hello UTII Beauty Parlour! I want to book an appointment.
 
 Name: ${formData.name}

@@ -2,51 +2,153 @@ import { useState, useEffect } from 'react';
 import { Power, Loader } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
-export default function Admin() {
+type Booking = {
+  id: string;
+  customer_name: string;
+  phone: string;
+  service: string;
+  preferred_date: string;
+  preferred_time: string;
+  notes?: string;
+  deposit_amount: number;
+  deposit_paid: boolean;
+  status: string;
+  created_at: string;
+};
+
+export default function Admin({ onLogout }: { onLogout?: () => void }) {
   const [isOpen, setIsOpen] = useState(true);
   const [loading, setLoading] = useState(true);
+  const [shopStatusError, setShopStatusError] = useState<string | null>(null);
   const [updating, setUpdating] = useState(false);
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [loadingBookings, setLoadingBookings] = useState(true);
+  const [bookingsError, setBookingsError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchShopStatus();
+    fetchBookings();
   }, []);
 
   const fetchShopStatus = async () => {
-    const { data, error } = await supabase
-      .from('shop_status')
-      .select('is_open')
-      .maybeSingle();
+    try {
+      const { data, error } = await supabase
+        .from('shop_status')
+        .select('is_open')
+        .maybeSingle();
 
-    if (data && !error) {
-      setIsOpen(data.is_open);
+      if (error) {
+        // log info and surface a friendly message in the Admin UI
+        // eslint-disable-next-line no-console
+        console.info('[supabase] shop_status fetch failed:', error.message || error);
+        setShopStatusError('shop_status table missing or inaccessible. Run migrations.');
+      } else if (data) {
+        setIsOpen(data.is_open);
+      }
+    } catch (err: any) {
+      // eslint-disable-next-line no-console
+      console.info('[supabase] shop_status unexpected error:', err?.message || err);
+      setShopStatusError('Failed to fetch shop status (network or configuration issue).');
     }
+
     setLoading(false);
+  };
+
+  const fetchBookings = async () => {
+    setLoadingBookings(true);
+    setBookingsError(null);
+    try {
+      const { data, error } = await supabase.from('bookings').select('*').order('created_at', { ascending: false });
+      if (error) {
+        setBookingsError(error.message || 'Failed to fetch bookings');
+        setBookings([]);
+      } else {
+        setBookings((data as Booking[]) || []);
+      }
+    } catch (err: any) {
+      setBookingsError(err?.message || String(err));
+      setBookings([]);
+    }
+    setLoadingBookings(false);
+  };
+
+  const updateBookingStatus = async (id: string, status: string) => {
+    const { error } = await supabase.from('bookings').update({ status }).eq('id', id);
+    if (!error) fetchBookings();
+  };
+
+  const messageCustomer = (phone: string, name: string) => {
+    const whatsappNumber = phone.replace(/\D/g, '');
+    const msg = `Hello ${name}, this is UTII Beauty Parlour. We received your booking request — we'll confirm shortly.`;
+    const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`;
+    window.open(url, '_blank');
+  };
+
+  const seedTestBooking = async () => {
+    try {
+      const { error } = await supabase.from('bookings').insert([
+        {
+          customer_name: 'Dev Test',
+          phone: '+919876543210',
+          service: 'Test Service',
+          preferred_date: new Date().toISOString().split('T')[0],
+          preferred_time: '12:00',
+          notes: 'Seeded from admin UI',
+          deposit_amount: 100,
+          deposit_paid: false,
+          status: 'pending',
+        },
+      ]);
+      if (error) {
+        alert('Failed to seed booking: ' + error.message);
+      } else {
+        await fetchBookings();
+      }
+    } catch (err: any) {
+      alert('Failed to seed booking: ' + err?.message);
+    }
   };
 
   const toggleShopStatus = async () => {
     setUpdating(true);
+    setShopStatusError(null);
 
-    const { data: currentStatus } = await supabase
-      .from('shop_status')
-      .select('id, is_open')
-      .maybeSingle();
-
-    if (currentStatus) {
-      const { error } = await supabase
+    try {
+      const { data: currentStatus, error: fetchErr } = await supabase
         .from('shop_status')
-        .update({
-          is_open: !currentStatus.is_open,
-          updated_at: new Date().toISOString(),
-          updated_by: 'admin',
-        })
-        .eq('id', currentStatus.id);
+        .select('id, is_open')
+        .maybeSingle();
 
-      if (!error) {
-        setIsOpen(!currentStatus.is_open);
+      if (fetchErr) {
+        // eslint-disable-next-line no-console
+        console.error('[supabase] failed to read shop_status before update:', fetchErr.message || fetchErr);
+        setShopStatusError('Failed to read shop status before update: ' + (fetchErr.message || String(fetchErr)));
+        return;
       }
-    }
 
-    setUpdating(false);
+      if (currentStatus) {
+        // Perform the update without requesting the updated representation.
+        const { error } = await supabase
+          .from('shop_status')
+          .update({
+            is_open: !currentStatus.is_open,
+            updated_at: new Date().toISOString(),
+            updated_by: 'admin',
+          })
+          .eq('id', currentStatus.id);
+
+        if (error) {
+          // eslint-disable-next-line no-console
+          console.error('[supabase] failed to update shop_status:', error.message || error);
+          setShopStatusError('Failed to update shop status: ' + (error.message || String(error)));
+        } else {
+          // Refresh authoritative value from DB so UI stays consistent
+          await fetchShopStatus();
+        }
+      }
+    } finally {
+      setUpdating(false);
+    }
   };
 
   if (loading) {
@@ -80,6 +182,17 @@ export default function Admin() {
             <Power className="h-12 w-12 text-rose-500" />
           </div>
 
+          {onLogout && (
+            <div className="flex justify-end mb-4">
+              <button
+                onClick={onLogout}
+                className="text-sm text-gray-600 hover:text-gray-800 underline"
+              >
+                Logout
+              </button>
+            </div>
+          )}
+
           <div className="bg-gray-50 rounded-xl p-8 mb-8">
             <div className="flex items-center justify-between">
               <div>
@@ -99,6 +212,11 @@ export default function Admin() {
                   <span>{isOpen ? 'Shop is Open' : 'Shop is Closed'}</span>
                 </div>
               </div>
+              {shopStatusError && (
+                <div className="mt-4 p-3 bg-yellow-50 text-yellow-800 rounded">
+                  {shopStatusError}
+                </div>
+              )}
 
               <button
                 onClick={toggleShopStatus}
@@ -144,6 +262,70 @@ export default function Admin() {
               <p className="text-xl font-semibold">Check .env file</p>
             </div>
           </div>
+        </div>
+
+        <div className="mt-8 bg-white rounded-2xl shadow-xl p-8">
+          <h2 className="text-2xl font-bold text-gray-800 mb-4">Recent Bookings</h2>
+          {loadingBookings ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader className="h-8 w-8 text-rose-500 animate-spin" />
+            </div>
+          ) : bookings.length === 0 ? (
+            <div>
+              <p className="text-gray-600">No bookings yet.</p>
+              <div className="mt-4">
+                <button
+                  onClick={seedTestBooking}
+                  className="px-4 py-2 bg-rose-500 text-white rounded-md"
+                >
+                  Seed test booking
+                </button>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {bookings.map((b) => (
+                <div key={b.id} className="border rounded-lg p-4 flex items-start justify-between">
+                  <div>
+                    <div className="font-semibold text-gray-800">{b.customer_name} — {b.service}</div>
+                    <div className="text-sm text-gray-600">{b.preferred_date} @ {b.preferred_time}</div>
+                    {b.notes && <div className="text-sm text-gray-600 mt-1">{b.notes}</div>}
+                    <div className="text-sm text-gray-600 mt-1">Status: <span className="font-medium">{b.status}</span></div>
+                  </div>
+
+                  <div className="flex flex-col space-y-2">
+                    <button
+                      onClick={() => messageCustomer(b.phone, b.customer_name)}
+                      className="px-3 py-2 bg-green-500 text-white rounded-md text-sm"
+                    >
+                      Message
+                    </button>
+                    <button
+                      onClick={() => updateBookingStatus(b.id, 'confirmed')}
+                      className="px-3 py-2 bg-rose-500 text-white rounded-md text-sm"
+                    >
+                      Confirm
+                    </button>
+                    <button
+                      onClick={() => updateBookingStatus(b.id, 'cancelled')}
+                      className="px-3 py-2 bg-gray-300 text-gray-800 rounded-md text-sm"
+                    >
+                      Cancel
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+            {bookingsError && (
+              <div className="mt-4 p-4 bg-red-50 border border-red-200 text-red-700 rounded">
+                <div className="font-semibold">Error loading bookings</div>
+                <div className="text-sm">{bookingsError}</div>
+                <div className="mt-2">
+                  <button onClick={fetchBookings} className="px-3 py-2 bg-rose-500 text-white rounded">Retry</button>
+                </div>
+              </div>
+            )}
         </div>
       </div>
     </div>

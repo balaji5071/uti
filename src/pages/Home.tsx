@@ -7,6 +7,21 @@ export default function Home() {
   const [isOpen, setIsOpen] = useState(true);
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [shopStatusError, setShopStatusError] = useState<string | null>(null);
+
+  const handleOpenBooking = () => {
+    if (!isOpen) {
+      // Friendly message when shop is closed
+      const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER || '1234567890';
+      // eslint-disable-next-line no-alert
+      alert(
+        `We're currently closed. Please contact us on WhatsApp (${whatsappNumber}) for urgent requests or try booking during our open hours.`
+      );
+      return;
+    }
+
+    setIsBookingModalOpen(true);
+  };
 
   useEffect(() => {
     fetchShopStatus();
@@ -20,7 +35,7 @@ export default function Home() {
           schema: 'public',
           table: 'shop_status',
         },
-        (payload) => {
+        (payload: any) => {
           setIsOpen(payload.new.is_open);
         }
       )
@@ -32,14 +47,32 @@ export default function Home() {
   }, []);
 
   const fetchShopStatus = async () => {
-    const { data, error } = await supabase
-      .from('shop_status')
-      .select('is_open')
-      .maybeSingle();
+    try {
+      const { data, error } = await supabase
+        .from('shop_status')
+        .select('is_open')
+        .maybeSingle();
 
-    if (data && !error) {
-      setIsOpen(data.is_open);
+      if (error) {
+        // common PostgREST error when the table does not exist is PGRST205
+        // surface a friendly message for developers and fall back to a default
+        // so the UI remains usable while the migration is applied.
+        // eslint-disable-next-line no-console
+        console.info('[supabase] shop_status fetch failed:', error.message || error);
+        setShopStatusError(
+          'Shop status not available from the database. Run the migrations or create the `shop_status` table.'
+        );
+        // keep default isOpen value (true) so the page still renders sensibly
+      } else if (data) {
+        setIsOpen(data.is_open);
+      }
+    } catch (err: any) {
+      // network/other errors
+      // eslint-disable-next-line no-console
+      console.info('[supabase] shop_status fetch unexpected error:', err?.message || err);
+      setShopStatusError('Failed to fetch shop status (network or configuration issue).');
     }
+
     setLoading(false);
   };
 
@@ -65,6 +98,11 @@ export default function Home() {
                 <span>{isOpen ? 'UTII is Open Now' : 'UTII is Closed Now'}</span>
               </div>
             )}
+            {shopStatusError && (
+              <div className="mt-3 text-sm text-yellow-700 bg-yellow-50 p-3 rounded">
+                {shopStatusError}
+              </div>
+            )}
           </div>
 
           <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent">
@@ -74,13 +112,16 @@ export default function Home() {
             Where Beauty Meets Excellence
           </p>
           <p className="text-lg text-gray-600 mb-12 max-w-2xl mx-auto">
-            Experience professional beauty services in a luxurious and comfortable environment.
+            Experience professional beauty services in a comfortable environment.<br/>
             Your satisfaction is our priority.
           </p>
 
           <button
-            onClick={() => setIsBookingModalOpen(true)}
-            className="bg-gradient-to-r from-rose-500 to-pink-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:from-rose-600 hover:to-pink-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+            onClick={handleOpenBooking}
+            disabled={!isOpen}
+            className={`bg-gradient-to-r from-rose-500 to-pink-500 text-white px-8 py-4 rounded-full text-lg font-semibold hover:from-rose-600 hover:to-pink-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 ${
+              !isOpen ? 'opacity-60 cursor-not-allowed hover:shadow-none hover:from-rose-500' : ''
+            }`}
           >
             Book Appointment via WhatsApp
           </button>
@@ -96,7 +137,7 @@ export default function Home() {
               </div>
               <h3 className="text-xl font-bold text-gray-800 mb-2">Expert Professionals</h3>
               <p className="text-gray-600">
-                Highly trained beauticians with years of experience in the industry.
+                Highly trained beauticians with years of experience .
               </p>
             </div>
 
@@ -133,8 +174,11 @@ export default function Home() {
             Book your appointment now and experience the UTII difference
           </p>
           <button
-            onClick={() => setIsBookingModalOpen(true)}
-            className="bg-white text-rose-600 px-8 py-4 rounded-full text-lg font-semibold hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+            onClick={handleOpenBooking}
+            disabled={!isOpen}
+            className={`bg-white text-rose-600 px-8 py-4 rounded-full text-lg font-semibold hover:bg-gray-100 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-1 ${
+              !isOpen ? 'opacity-60 cursor-not-allowed hover:shadow-none' : ''
+            }`}
           >
             Book Now
           </button>
