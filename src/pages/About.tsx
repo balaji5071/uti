@@ -6,7 +6,7 @@ export default function About() {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h1 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent">
-            About UTII Beauty Parlour
+            About UTI Beauty Parlour
           </h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Your trusted destination for all beauty needs
@@ -18,7 +18,7 @@ export default function About() {
             <div>
               <h2 className="text-3xl font-bold text-gray-800 mb-6">Our Story</h2>
               <p className="text-gray-600 mb-4 leading-relaxed">
-                UTII Beauty Parlour was founded with a vision to provide exceptional beauty services
+                UTI Beauty Parlour was founded with a vision to provide exceptional beauty services
                 that enhance natural beauty and boost confidence. We believe that every person
                 deserves to look and feel their absolute best.
               </p>
@@ -79,7 +79,7 @@ export default function About() {
         </div>
 
         <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12">
-          <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Why Choose UTII?</h2>
+          <h2 className="text-3xl font-bold text-gray-800 mb-6 text-center">Why Choose UTI?</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div>
               <h3 className="text-xl font-semibold text-rose-600 mb-3">Expert Team</h3>

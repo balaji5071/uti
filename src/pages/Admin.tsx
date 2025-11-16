@@ -79,7 +79,7 @@ export default function Admin({ onLogout }: { onLogout?: () => void }) {
 
   const messageCustomer = (phone: string, name: string) => {
     const whatsappNumber = phone.replace(/\D/g, '');
-    const msg = `Hello ${name}, this is UTII Beauty Parlour. We received your booking request — we'll confirm shortly.`;
+  const msg = `Hello ${name}, this is UTI Beauty Parlour. We received your booking request — we'll confirm shortly.`;
     const url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(msg)}`;
     window.open(url, '_blank');
   };

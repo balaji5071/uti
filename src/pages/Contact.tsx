@@ -29,7 +29,7 @@ export default function Contact() {
                 <div>
                   <h3 className="font-semibold text-gray-800 mb-1">Address</h3>
                   <p className="text-gray-600">
-                    UTII Beauty Parlour<br />
+                    UTI Beauty Parlour<br />
                     QPGV+MX5, Ambedkar chowk<br />
                     Ambagarh Chowki, Chhattisgarh - 491665
                   </p>
@@ -85,7 +85,7 @@ export default function Contact() {
                 allowFullScreen
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
-                title="UTII Beauty Parlour Location"
+                title="UTI Beauty Parlour Location"
               />
             </div>
             <a
@@ -102,7 +102,7 @@ export default function Contact() {
         <div className="bg-gradient-to-r from-rose-500 to-pink-500 rounded-2xl p-8 md:p-12 text-center text-white">
           <h2 className="text-3xl font-bold mb-4">Ready to Visit?</h2>
           <p className="text-lg mb-6 opacity-90">
-            We look forward to welcoming you to UTII Beauty Parlour!
+            We look forward to welcoming you to UTI Beauty Parlour!
           </p>
           <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
             <a

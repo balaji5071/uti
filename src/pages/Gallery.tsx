@@ -68,7 +68,7 @@ export default function Gallery() {
           </p>
           <div className="flex justify-center space-x-4">
             <div className="bg-gradient-to-r from-rose-500 to-pink-500 text-white px-6 py-3 rounded-full font-semibold">
-              @utiibeauty
+              @utibeauty
             </div>
           </div>
         </div>

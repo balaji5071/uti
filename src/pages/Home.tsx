@@ -95,7 +95,7 @@ export default function Home() {
                     isOpen ? 'bg-green-500' : 'bg-red-500'
                   }`}
                 />
-                <span>{isOpen ? 'UTII is Open Now' : 'UTII is Closed Now'}</span>
+                <span>{isOpen ? 'UTI is Open Now' : 'UTI is Closed Now'}</span>
               </div>
             )}
             {shopStatusError && (
@@ -106,7 +106,7 @@ export default function Home() {
           </div>
 
           <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-rose-600 to-pink-600 bg-clip-text text-transparent">
-            UTII Beauty Parlour
+            UTI Beauty Parlour
           </h1>
           <p className="text-xl md:text-2xl text-gray-700 mb-8">
             Where Beauty Meets Excellence
@@ -171,7 +171,7 @@ export default function Home() {
             Ready to Transform Your Look?
           </h2>
           <p className="text-xl mb-8 opacity-90">
-            Book your appointment now and experience the UTII difference
+            Book your appointment now and experience the UTI difference
           </p>
           <button
             onClick={handleOpenBooking}

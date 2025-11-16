@@ -67,7 +67,7 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
         }
       }
     })();
-  const message = `Hello UTII Beauty Parlour! I want to book an appointment.
+  const message = `Hello UTI Beauty Parlour! I want to book an appointment.
 
 Name: ${formData.name}
 Phone: ${formData.phone}

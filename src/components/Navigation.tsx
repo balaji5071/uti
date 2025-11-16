@@ -25,7 +25,7 @@ export default function Navigation({ currentPage, onNavigate }: NavigationProps)
           <div className="flex items-center space-x-2 cursor-pointer" onClick={() => onNavigate('home')}>
             <Sparkles className="h-8 w-8 text-rose-500" />
             <span className="text-2xl font-bold bg-gradient-to-r from-rose-500 to-pink-500 bg-clip-text text-transparent">
-              UTII Beauty
+              UTI Beauty
             </span>
           </div>
 
