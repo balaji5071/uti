@@ -9,24 +9,20 @@ export default function AdminGuard() {
   const [loading, setLoading] = useState(true);
   const [session, setSession] = useState<any>(null);
 
-  // Load existing auth session
   useEffect(() => {
-    const getSession = async () => {
+    const loadSession = async () => {
       const { data } = await supabase.auth.getSession();
       setSession(data.session ?? null);
       setLoading(false);
     };
 
-    getSession();
+    loadSession();
 
-    // Listen to login/logout
     const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
     });
 
-    return () => {
-      listener.subscription.unsubscribe();
-    };
+    return () => listener.subscription.unsubscribe();
   }, []);
 
   const login = async (e: React.FormEvent) => {
@@ -38,47 +34,43 @@ export default function AdminGuard() {
       password: pass,
     });
 
-    if (error) {
-      setError(error.message);
-    }
+    if (error) setError(error.message);
   };
 
   const logout = async () => {
     await supabase.auth.signOut();
   };
 
-  if (loading) {
-    return <div className="p-8 text-center">Loading...</div>;
-  }
+  if (loading) return <div className="p-8">Loading...</div>;
 
   if (!session) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-rose-50">
-        <div className="bg-white rounded-xl p-8 shadow-xl w-full max-w-sm">
+        <div className="bg-white p-8 rounded-xl shadow max-w-sm w-full">
           <h2 className="text-xl font-bold mb-4">Admin Login</h2>
 
           <form onSubmit={login} className="space-y-4">
             <input
               type="email"
-              required
-              placeholder="Admin Email"
-              className="w-full p-3 border rounded"
+              className="w-full border p-3 rounded"
+              placeholder="Admin email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              required
             />
 
             <input
               type="password"
-              required
+              className="w-full border p-3 rounded"
               placeholder="Password"
-              className="w-full p-3 border rounded"
               value={pass}
               onChange={(e) => setPass(e.target.value)}
+              required
             />
 
             {error && <div className="text-red-600 text-sm">{error}</div>}
 
-            <button className="w-full bg-rose-500 text-white p-3 rounded-lg">
+            <button className="w-full bg-rose-500 text-white p-3 rounded">
               Login
             </button>
           </form>
