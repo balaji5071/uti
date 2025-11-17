@@ -13,7 +13,7 @@ export default function Home() {
   const handleOpenBooking = () => {
     if (!isOpen) {
       // Friendly message when shop is closed
-      const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER || '1234567890';
+  const whatsappNumber = import.meta.env.VITE_WHATSAPP_NUMBER || '+91 62604 49446';
       // eslint-disable-next-line no-alert
       alert(
         `We're currently closed. Please contact us on WhatsApp (${whatsappNumber}) for urgent requests or try booking during our open hours.`
@@ -83,7 +83,7 @@ export default function Home() {
     name: 'UTI Beauty Parlour',
     url: SITE_URL,
     image: 'https://images.pexels.com/photos/3065209/pexels-photo-3065209.jpeg?auto=compress&cs=tinysrgb&w=600',
-    telephone: '+91 9346163673',
+  telephone: '+91 62604 49446',
     priceRange: '₹₹',
     address: {
       '@type': 'PostalAddress',

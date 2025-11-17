@@ -1,4 +1,4 @@
-import { MapPin, Phone, Clock, Mail } from 'lucide-react';
+import { MapPin, Phone, Clock } from 'lucide-react';
 import { useState } from 'react';
 import BookingModal from '../components/BookingModal';
 import Seo from '../components/Seo';
@@ -19,7 +19,7 @@ export default function Contact() {
           '@type': 'BeautySalon',
           name: 'UTI Beauty Parlour',
           url: siteUrl,
-          telephone: '+91-9346163673',
+          telephone: '+91 62604 49446',
           address: {
             '@type': 'PostalAddress',
             streetAddress: 'QPGW+F3W, Ambagarh Chowki',
@@ -72,12 +72,12 @@ export default function Contact() {
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-800 mb-1">Phone</h3>
-                  <p className="text-gray-600">+91 9346163673</p>
-                  <p className="text-gray-600">+91 9346163673</p>
+                  <p className="text-gray-600">+91 62604 49446</p>
+                  <p className="text-gray-600">+91 62604 49446</p>
                 </div>
               </div>
 
-              <div className="flex items-start space-x-4">
+              {/* <div className="flex items-start space-x-4">
                 <div className="bg-rose-100 p-3 rounded-full">
                   <Mail className="h-6 w-6 text-rose-600" />
                 </div>
@@ -86,7 +86,7 @@ export default function Contact() {
                   <p className="text-gray-600">hello@utibeauty.com</p>
                   <p className="text-gray-600">support@utibeauty.com</p>
                 </div>
-              </div>
+              </div> */}
 
               <div className="flex items-start space-x-4">
                 <div className="bg-rose-100 p-3 rounded-full">
@@ -94,7 +94,7 @@ export default function Contact() {
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-800 mb-1">Business Hours</h3>
-                  <p className="text-gray-600">Monday - Saturday: 10:00 AM - 8:00 PM</p>
+                  <p className="text-gray-600">Monday - Saturday: 10:00 AM - 5:00 PM</p>
                   <p className="text-gray-600">Sunday: Closed</p>
                 </div>
               </div>
@@ -140,7 +140,7 @@ export default function Contact() {
           </p>
           <div className="flex flex-col sm:flex-row justify-center space-y-4 sm:space-y-0 sm:space-x-4">
             <a
-              href="tel:+911234567890"
+              href="tel:+916260449446"
               className="bg-white text-rose-600 px-8 py-3 rounded-full font-semibold hover:bg-gray-100 transition-all duration-300"
             >
               Call Now
