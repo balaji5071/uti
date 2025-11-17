@@ -87,11 +87,16 @@ export default function Home() {
     priceRange: '₹₹',
     address: {
       '@type': 'PostalAddress',
-      streetAddress: 'QPGV+MX5, Ambedkar Chowk',
+      streetAddress: 'QPGW+F3W, Ambagarh Chowki',
       addressLocality: 'Ambagarh Chowki',
       addressRegion: 'Chhattisgarh',
       postalCode: '491665',
       addressCountry: 'IN',
+    },
+    geo: {
+      '@type': 'GeoCoordinates',
+      latitude: '20.776245',
+      longitude: '80.745208',
     },
     openingHoursSpecification: [
       {
@@ -102,7 +107,7 @@ export default function Home() {
       },
     ],
     sameAs: [
-      'https://www.google.com/maps/place/QPGV%2BMX5,+Ambedkar+Chowk,+Ambagarh+Chowki,+Chhattisgarh+491665',
+      'https://www.google.com/maps/place/QPGW%2BF3W,+Ambagarh+Chowki,+Chhattisgarh+491665',
     ],
   };
 

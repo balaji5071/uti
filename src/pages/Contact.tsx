@@ -22,11 +22,16 @@ export default function Contact() {
           telephone: '+91-9346163673',
           address: {
             '@type': 'PostalAddress',
-            streetAddress: 'QPGV+MX5, Ambedkar Chowk',
+            streetAddress: 'QPGW+F3W, Ambagarh Chowki',
             addressLocality: 'Ambagarh Chowki',
             addressRegion: 'Chhattisgarh',
             postalCode: '491665',
             addressCountry: 'IN',
+          },
+          geo: {
+            '@type': 'GeoCoordinates',
+            latitude: '20.776245',
+            longitude: '80.745208',
           },
           openingHours: 'Mo-Sa 10:00-20:00',
         }}
@@ -55,8 +60,8 @@ export default function Contact() {
                   <h3 className="font-semibold text-gray-800 mb-1">Address</h3>
                   <p className="text-gray-600">
                     UTI Beauty Parlour<br />
-                    QPGV+MX5, Ambedkar chowk<br />
-                    Ambagarh Chowki, Chhattisgarh - 491665
+                    QPGW+F3W, Ambagarh Chowki<br />
+                    Ambagarh Chowki, Chhattisgarh 491665
                   </p>
                 </div>  
               </div>
@@ -107,7 +112,7 @@ export default function Contact() {
             <h2 className="text-3xl font-bold text-gray-800 mb-8">Location</h2>
             <div className="rounded-2xl overflow-hidden shadow-xl h-[500px]">
               <iframe
-                src="https://www.google.com/maps?q=QPGV%2BMX5%2C%20Ambedkar%20chowk%2C%20Ambagarh%20Chowki%2C%20Chhattisgarh%20491665&output=embed"
+                src="https://www.google.com/maps?q=20.776245,80.745208&output=embed"
                 width="100%"
                 height="100%"
                 style={{ border: 0 }}
@@ -118,7 +123,7 @@ export default function Contact() {
               />
             </div>
             <a
-              href="https://www.google.com/maps/dir/?api=1&destination=QPGV%2BMX5%2C%20Ambedkar%20chowk%2C%20Ambagarh%20Chowki%2C%20Chhattisgarh%20491665"
+              href="https://www.google.com/maps/dir/?api=1&destination=20.776245,80.745208"
               target="_blank"
               rel="noopener noreferrer"
               className="mt-4 block w-full bg-white border-2 border-rose-500 text-rose-600 px-8 py-3 rounded-full text-center font-semibold hover:bg-rose-50 transition-all duration-300"
